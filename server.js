@@ -1,10 +1,11 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+require("dotenv").config(); //estamos pidiendo el .env
 
 const rutaDocente = require("./routes/rutas-docente");
 const rutaCurso = require("./routes/rutas-curso");
-const port = 3000;
+
 app.use(express.json());
 
 app.use("/api/cursos", rutaCurso);
@@ -17,11 +18,9 @@ app.use((req, res) => {
 });
 
 mongoose
-  .connect(
-    "mongodb+srv://Natxafav:Ch0c0late@cluster0.xwnrywd.mongodb.net/docente?retryWrites=true&w=majority"
-  )
+  .connect(process.env.MONGO_DB_URI)
   .then(() => {
-    app.listen(port, () => console.log("Servidor corriendo en el puerto 3000"));
+    app.listen(process.env.PORT, () => console.log("Servidor corriendo."));
   })
   .catch((error) => {
     console.log(error.message);
