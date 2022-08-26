@@ -139,21 +139,21 @@ router.post("/", async (req, res, next) => {
 
 //Modificar
 router.patch("/:id", async (req, res, next) => {
-  const { nombre, email, password, cursos, activo } = req.body;
-  // const camposPorCambiar=req.body;
+  // const { nombre, email, password, cursos, activo } = req.body;
+  const camposPorCambiar = req.body;
   const idDocente = req.params.id;
   let docenteBuscar;
   try {
     docenteBuscar = await Docente.findByIdAndUpdate(
       idDocente,
-      // camposPorCambiar,
-      {
-        nombre: nombre,
-        email: email,
-        password: password,
-        cursos: cursos,
-        activo: activo,
-      },
+      camposPorCambiar,
+      // {
+      //   nombre: nombre,
+      //   email: email,
+      //   password: password,
+      //   cursos: cursos,
+      //   activo: activo,
+      // },
       { new: true, runValidators: true }
     ); // (1) Localizamos y actualizamos a la vez el docente en la BDD
   } catch (error) {
