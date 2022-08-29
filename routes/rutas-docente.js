@@ -147,13 +147,7 @@ router.patch("/:id", async (req, res, next) => {
     docenteBuscar = await Docente.findByIdAndUpdate(
       idDocente,
       camposPorCambiar,
-      // {
-      //   nombre: nombre,
-      //   email: email,
-      //   password: password,
-      //   cursos: cursos,
-      //   activo: activo,
-      // },
+
       { new: true, runValidators: true }
     ); // (1) Localizamos y actualizamos a la vez el docente en la BDD
   } catch (error) {
@@ -173,28 +167,36 @@ router.delete("/:id", async (req, res, next) => {
   idEliminar = req.params.id;
   let docenteEliminar;
   try {
-    docenteEliminar = await Docente.findById(idEliminar);
+    docenteEliminar = await Docente.findByIdAndDelete(idEliminar);
   } catch (error) {
-    const err = new Error(
-      "No se han podido eliminar los datos" + error.message
-    );
+    const err = new Error("Error al eliminar.");
     err.code = 500;
     return next(error);
   }
-  if (!docenteEliminar) {
-    const error = new Error("No se encuentra ese id.");
-    error.code = 404;
-    return next(error);
-  }
-  try {
-    await docenteEliminar.remove();
-    docenteEliminar.cursos.docente.pull(docenteEliminar);
-    await docenteEliminar.cursos.save();
-  } catch (error) {
-    const err = new Error("Error al eliminar." + error.message);
-    error.code = 500;
-    return next(error);
-  }
+
+  // try {
+  //   docenteEliminar = await Docente.findById(idEliminar);
+  // } catch (error) {
+  //   const err = new Error(
+  //     "No se han podido eliminar los datos" + error.message
+  //   );
+  //   err.code = 500;
+  //   return next(error);
+  // }
+  // if (!docenteEliminar) {
+  //   const error = new Error("No se encuentra ese id.");
+  //   error.code = 404;
+  //   return next(error);
+  // }
+  // try {
+  //   await docenteEliminar.remove();
+  //   docenteEliminar.cursos.docente.pull(docenteEliminar);
+  //   await docenteEliminar.cursos.save();
+  // } catch (error) {
+  //   const err = new Error("Error al eliminar." + error.message);
+  //   error.code = 500;
+  //   return next(error);
+  // }
   res.json({
     mensaje: "Docente eliminado",
     docente: docenteEliminar,

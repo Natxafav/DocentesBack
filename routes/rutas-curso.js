@@ -96,14 +96,28 @@ router.patch("/:id", async (req, res, next) => {
   const idCurso = req.params.id;
   let cursoBuscar;
   try {
+    cursoBuscar = await Curso.findById(idCurso).populate("docente");
+    if (req.body.docente) {
+      cursoBuscar.docente.cursos.pull(cursoBuscar);
+      await cursoBuscar.docente.save();
+      docenteBuscar = await Docente.findById(req.body.docente);
+      docenteBuscar.cursos.push(cursoBuscar);
+      docenteBuscar.save();
+    }
     cursoBuscar = await Curso.findByIdAndUpdate(idCurso, req.body, {
       new: true,
       runValidators: true,
     });
+
+    // docenteBuscar = await Docente.findById(req.body.docente);
+    // docenteBuscar.cursos.push(cursoBuscar);
+    // docenteBuscar.save();
   } catch (error) {
+    console.log(error.message);
     const err = new Error(
       "Ha ocurrido un error. No se han podido actualizar los datos"
     );
+    console.log(error);
     error.code = 500;
     return next(err);
   }
