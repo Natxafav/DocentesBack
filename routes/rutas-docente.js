@@ -249,6 +249,7 @@ router.post("/login", async (req, res, next) => {
 
   res.status(200).json({
     mensaje: "Te has logueado como docente.",
+    userId: docenteExiste.id,
     email: docenteExiste.email,
     token: token,
   });

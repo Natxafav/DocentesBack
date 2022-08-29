@@ -41,7 +41,7 @@ router.get("/:id", async (req, res, next) => {
 //Buscar por parametro
 
 // //!Midelware
-// router.use(checkAuth);
+router.use(checkAuth);
 
 //Publicar nuevo
 router.post("/", async (req, res, next) => {

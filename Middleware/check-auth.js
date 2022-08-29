@@ -2,11 +2,12 @@ const jwt = require("jsonwebtoken");
 
 const autorizacion = (req, res, next) => {
   try {
-    const token = req.headers.autorization.split("")[1];
+    const token = req.headers.authorization.split(" ")[1];
     if (!token) {
       throw new Error("Fallo de autenticación 1");
     }
-    decodedTOKEN = jwt.verify(token, "clave_supermegasecreta");
+
+    decodedTOKEN = jwt.verify(token, "clave_secreta");
     req.userData = {
       userId: decodedTOKEN.userId,
     };
