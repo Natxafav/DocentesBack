@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const checkAuth = require("../Middleware/check-auth");
 
 const Curso = require("../model/modelo-curso");
 const Docente = require("../model/modelo-docente");
@@ -37,6 +38,10 @@ router.get("/:id", async (req, res, next) => {
     curso: curso,
   });
 });
+//Buscar por parametro
+
+// //!Midelware
+// router.use(checkAuth);
 
 //Publicar nuevo
 router.post("/", async (req, res, next) => {
@@ -88,21 +93,13 @@ router.post("/", async (req, res, next) => {
 
 //Modificar
 router.patch("/:id", async (req, res, next) => {
-  const { curso, docente, opcion, aula, precio } = req.body;
   const idCurso = req.params.id;
   let cursoBuscar;
   try {
-    cursoBuscar = await Curso.findByIdAndUpdate(
-      idCurso,
-      {
-        curso,
-        docente,
-        opcion,
-        aula,
-        precio,
-      },
-      { new: true }
-    );
+    cursoBuscar = await Curso.findByIdAndUpdate(idCurso, req.body, {
+      new: true,
+      runValidators: true,
+    });
   } catch (error) {
     const err = new Error(
       "Ha ocurrido un error. No se han podido actualizar los datos"
@@ -123,7 +120,7 @@ router.delete("/:id", async (req, res, next) => {
   try {
     cursoEliminar = await Curso.findById(idEliminar).populate("docente");
   } catch (error) {
-    const err = new Error("No se ha podido acceder" + error.message);
+    const err = new Error("No se ha podido acceder");
     error.code = 500;
     return next(err);
   }
@@ -143,7 +140,7 @@ router.delete("/:id", async (req, res, next) => {
   }
   res.json({
     mensaje: "Curso eliminado",
-    curso: cursoEliminar,
+    // curso: cursoEliminar,
   });
 });
 
