@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Natxafav/Docentes-BackEnd.git"
+    "url": "git+https://github.com/Natxafav/Back-Docentes.git"
   },
   "keywords": [
     "mongoose"
