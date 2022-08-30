@@ -41,7 +41,7 @@ router.get("/:id", async (req, res, next) => {
 //Buscar por parametro
 
 // //!Midelware
-router.use(checkAuth);
+// router.use(checkAuth);
 
 //Publicar nuevo
 router.post("/", async (req, res, next) => {
@@ -56,7 +56,7 @@ router.post("/", async (req, res, next) => {
     verificarCurso = await Curso.findOne({
       curso: curso,
       opcion: opcion,
-    });
+    }).populate("docente");
   } catch (err) {
     res.status(500).json({
       mensaje: "Ha fallado la operación",
@@ -95,8 +95,16 @@ router.post("/", async (req, res, next) => {
 router.patch("/:id", async (req, res, next) => {
   const idCurso = req.params.id;
   let cursoBuscar;
+
   try {
     cursoBuscar = await Curso.findById(idCurso).populate("docente");
+    console.log(req.userData.userId);
+    console.log(cursoBuscar.docente._id);
+    if (cursoBuscar.docente._id.toString() !== req.userData.userId) {
+      const err = new Error("No tienes permisos para realizar esa acción.");
+      err.code = 401;
+      return next(err);
+    }
     if (req.body.docente) {
       cursoBuscar.docente.cursos.pull(cursoBuscar);
       await cursoBuscar.docente.save();
@@ -107,11 +115,7 @@ router.patch("/:id", async (req, res, next) => {
     cursoBuscar = await Curso.findByIdAndUpdate(idCurso, req.body, {
       new: true,
       runValidators: true,
-    });
-
-    // docenteBuscar = await Docente.findById(req.body.docente);
-    // docenteBuscar.cursos.push(cursoBuscar);
-    // docenteBuscar.save();
+    }).populate("docente");
   } catch (error) {
     console.log(error.message);
     const err = new Error(
