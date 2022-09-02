@@ -40,6 +40,22 @@ router.get("/buscar/:busca", async (req, res, next) => {
   res.status(200).json({ mensaje: "Docentes encontrados", docentes: docentes });
 });
 
+//Acceder a datos del cliente por email
+router.get("/personal/:busca", async (req, res, next) => {
+  const search = req.params.busca;
+  let docentes;
+  try {
+    docentes = await Docente.find({
+      email: { $regex: search, $options: "i" }, //regex: nos indica que busquemos en el valor asignado a search y options es para ignorar may o min;
+    }).populate("cursos");
+  } catch (error) {
+    const err = new Error("No se han encontrado los datos solicitados.🔙");
+    err.code = 500;
+    return next(err);
+  }
+  res.status(200).json({ mensaje: "Docentes encontrados", docentes: docentes });
+});
+
 //Conseguir por id
 router.get("/:id", async (req, res, next) => {
   const idDocente = req.params.id;
@@ -66,7 +82,7 @@ router.get("/:id", async (req, res, next) => {
 
 //Publicar nuevo
 router.post("/", async (req, res, next) => {
-  const { nombre, email, password, activo } = req.body;
+  const { nombre, email, password } = req.body;
   let existeDocente;
   try {
     existeDocente = await Docente.findOne({
@@ -103,7 +119,6 @@ router.post("/", async (req, res, next) => {
       email,
       password: hashedPassword,
       cursos: [],
-      activo,
     });
 
     try {
@@ -139,7 +154,7 @@ router.post("/", async (req, res, next) => {
 
 //Modificar
 router.patch("/:id", async (req, res, next) => {
-  // const { nombre, email, password, cursos, activo } = req.body;
+  // const { nombre, email, password, cursos} = req.body;
   const camposPorCambiar = req.body;
   const idDocente = req.params.id;
   let docenteBuscar;

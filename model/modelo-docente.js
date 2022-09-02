@@ -28,10 +28,5 @@ const docenteSchema = new mongoose.Schema({
       ref: "Curso",
     },
   ],
-
-  activo: {
-    type: Boolean,
-    required: true,
-  },
 });
 module.exports = mongoose.model("Docente", docenteSchema);
