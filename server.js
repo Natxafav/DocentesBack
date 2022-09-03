@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 require("dotenv").config(); //estamos pidiendo el .env
-const cors = require("cors");
+const cors = require("cors"); // evitar problemas server 3000 con 5000
 
 const rutaDocente = require("./routes/rutas-docente");
 const rutaCurso = require("./routes/rutas-curso");
