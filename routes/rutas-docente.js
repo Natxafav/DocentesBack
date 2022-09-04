@@ -133,7 +133,7 @@ router.post("/", async (req, res, next) => {
     try {
       token = jwt.sign(
         { userId: nuevoDocente.id, email: nuevoDocente.email },
-        "clave_supermegasecreta",
+        "clave_secreta",
         { expiresIn: "1h" }
       );
     } catch (error) {

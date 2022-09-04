@@ -41,7 +41,7 @@ router.get("/:id", async (req, res, next) => {
 //Buscar por parametro
 
 // //!Midelware
-// router.use(checkAuth);
+router.use(checkAuth);
 
 //Publicar nuevo
 router.post("/", async (req, res, next) => {
@@ -100,6 +100,8 @@ router.patch("/:id", async (req, res, next) => {
     cursoBuscar = await Curso.findById(idCurso).populate("docente");
 
     if (cursoBuscar.docente._id.toString() !== req.userData.userId) {
+      console.log(cursoBuscar.docente._id);
+      console.log(req.userData.userId);
       const err = new Error("No tienes permisos para realizar esa acción.");
       err.code = 401;
       return next(err);
@@ -146,7 +148,9 @@ router.delete("/:id", async (req, res, next) => {
     error.status = 404;
     return next(error);
   }
-  if (curso.docente.id.toString() !== req.userData.userId) {
+
+  console.log(req);
+  if (cursoEliminar.docente._id.toString() !== req.userData.userId) {
     const err = new Error("No tiene permiso para eliminar este curso");
     err.code = 404;
     return next(err);
