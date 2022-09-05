@@ -222,6 +222,7 @@ router.delete("/:id", async (req, res, next) => {
 router.post("/login", async (req, res, next) => {
   const { email, password } = req.body;
   let docenteExiste;
+
   try {
     docenteExiste = await Docente.findOne({
       email: email,
@@ -235,6 +236,7 @@ router.post("/login", async (req, res, next) => {
   if (!docenteExiste) {
     const error = new Error("No se ha podido identificar al docente.");
     error.code = 422; //422 datos de usuario invalidos
+    res.json({ docenteok: false });
     return next(error);
   }
   let esValidoPassword = false;
@@ -244,6 +246,7 @@ router.post("/login", async (req, res, next) => {
       "No se ha podido identificar al usuario. Credenciales erróneos"
     );
     error.code = 401; // ! 401: Fallo de autenticación
+    res.json({ docenteok: false });
     return next(error);
   }
   //! CREAR EL TOKEN
@@ -267,6 +270,7 @@ router.post("/login", async (req, res, next) => {
     userId: docenteExiste.id,
     email: docenteExiste.email,
     token: token,
+    docenteok: true,
   });
 });
 
