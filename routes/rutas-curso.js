@@ -52,13 +52,12 @@ router.post("/", async (req, res, next) => {
 
   try {
     localizarDocente = await Docente.findById(docente).populate("cursos");
-
     verificarCurso = await Curso.findOne({
       curso: curso,
       opcion: opcion,
     }).populate("docente");
   } catch (err) {
-    res.status(500).json({
+    res.status(510).json({
       mensaje: "Ha fallado la operación",
       error: err.message,
     });
@@ -74,14 +73,20 @@ router.post("/", async (req, res, next) => {
     error.code = 404;
     return next(error);
   }
-  const nuevoCurso = new Curso({ curso, docente, opcion, aula, precio });
+  const nuevoCurso = new Curso({
+    curso,
+    docente,
+    opcion,
+    aula,
+    precio,
+  });
   try {
     await nuevoCurso.save(); //Creamos el curso y lo guardamos
     localizarDocente.cursos.push(nuevoCurso);
     await localizarDocente.save();
   } catch (error) {
     const err = new Error("Error. Ha fallado la operación.");
-    err.code = 404;
+    err.code = 405;
     return next(error);
   }
 
@@ -89,6 +94,21 @@ router.post("/", async (req, res, next) => {
     mensaje: "Curso agregado",
     curso: nuevoCurso,
   });
+});
+//Conseguir curso por parametro de búsqueda.
+router.get("/buscar/:busca", async (req, res, next) => {
+  const search = req.params.busca;
+  let curso;
+  try {
+    curso = await Curso.find({
+      curso: { $regex: search, $options: "i" }, //regex: nos indica que busquemos en el valor asignado a search y options es para ignorar may o min;
+    }).populate("docente");
+  } catch (error) {
+    const err = new Error("No se han encontrado los cursos solicitados.🔙");
+    err.code = 500;
+    return next(err);
+  }
+  res.status(200).json({ mensaje: "Curso encontrados", curso: curso });
 });
 
 //Modificar
