@@ -39,7 +39,21 @@ router.get("/:id", async (req, res, next) => {
   });
 });
 //Buscar por parametro
-
+router.get("/buscar/:busca", async (req, res, next) => {
+  const search = req.params.busca;
+  let cursos;
+  try {
+    cursos = await Curso.find({
+      curso: { $regex: search, $options: "i" },
+      //regex: nos indica que busquemos en el valor asignado a search y options es para ignorar may o min;
+    }).populate("docente");
+  } catch (error) {
+    const err = new Error("No se han encontrado los datos solicitados.🔙");
+    err.code = 500;
+    return next(err);
+  }
+  res.status(200).json({ mensaje: "Cursos encontrados", cursos: cursos });
+});
 // //!Midelware
 router.use(checkAuth);
 
@@ -95,21 +109,21 @@ router.post("/", async (req, res, next) => {
     curso: nuevoCurso,
   });
 });
-//Conseguir curso por parametro de búsqueda.
-router.get("/buscar/:busca", async (req, res, next) => {
-  const search = req.params.busca;
-  let curso;
-  try {
-    curso = await Curso.find({
-      curso: { $regex: search, $options: "i" }, //regex: nos indica que busquemos en el valor asignado a search y options es para ignorar may o min;
-    }).populate("docente");
-  } catch (error) {
-    const err = new Error("No se han encontrado los cursos solicitados.🔙");
-    err.code = 500;
-    return next(err);
-  }
-  res.status(200).json({ mensaje: "Curso encontrados", curso: curso });
-});
+// //Conseguir curso por parametro de búsqueda.
+// router.get("/buscar/:busca", async (req, res, next) => {
+//   const search = req.params.busca;
+//   let curso;
+//   try {
+//     curso = await Curso.find({
+//       curso: { $regex: search, $options: "i" }, //regex: nos indica que busquemos en el valor asignado a search y options es para ignorar may o min;
+//     }).populate("docente");
+//   } catch (error) {
+//     const err = new Error("No se han encontrado los cursos solicitados.🔙");
+//     err.code = 500;
+//     return next(err);
+//   }
+//   res.status(200).json({ mensaje: "Curso encontrados", curso: curso });
+// });
 
 //Modificar
 router.patch("/:id", async (req, res, next) => {
