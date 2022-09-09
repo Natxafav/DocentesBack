@@ -125,21 +125,6 @@ router.post("/", async (req, res, next) => {
     curso: nuevoCurso,
   });
 });
-// //Conseguir curso por parametro de búsqueda.
-// router.get("/buscar/:busca", async (req, res, next) => {
-//   const search = req.params.busca;
-//   let curso;
-//   try {
-//     curso = await Curso.find({
-//       curso: { $regex: search, $options: "i" }, //regex: nos indica que busquemos en el valor asignado a search y options es para ignorar may o min;
-//     }).populate("docente");
-//   } catch (error) {
-//     const err = new Error("No se han encontrado los cursos solicitados.🔙");
-//     err.code = 500;
-//     return next(err);
-//   }
-//   res.status(200).json({ mensaje: "Curso encontrados", curso: curso });
-// });
 
 //Modificar
 router.patch("/:id", async (req, res, next) => {
@@ -150,8 +135,6 @@ router.patch("/:id", async (req, res, next) => {
     cursoBuscar = await Curso.findById(idCurso).populate("docente");
 
     if (cursoBuscar.docente._id.toString() !== req.userData.userId) {
-      console.log(cursoBuscar.docente._id);
-      console.log(req.userData.userId);
       const err = new Error("No tienes permisos para realizar esa acción.");
       err.code = 401;
       return next(err);
@@ -172,7 +155,7 @@ router.patch("/:id", async (req, res, next) => {
     const err = new Error(
       "Ha ocurrido un error. No se han podido actualizar los datos"
     );
-    console.log(error);
+
     error.code = 500;
     return next(err);
   }
@@ -199,7 +182,6 @@ router.delete("/:id", async (req, res, next) => {
     return next(error);
   }
 
-  console.log(req);
   if (cursoEliminar.docente._id.toString() !== req.userData.userId) {
     const err = new Error("No tiene permiso para eliminar este curso");
     err.code = 404;
@@ -216,7 +198,6 @@ router.delete("/:id", async (req, res, next) => {
   }
   res.json({
     mensaje: "Curso eliminado",
-    // curso: cursoEliminar,
   });
 });
 

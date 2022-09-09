@@ -5,7 +5,10 @@ const cursoSchema = new mongoose.Schema({
     type: String,
   },
   docente: { type: mongoose.Types.ObjectId, ref: "Docente" },
-  opcion: { type: String, enum: ["Presencial", "Virtual", "Semi-presencial"] },
+  opcion: {
+    type: String,
+    enum: ["", "Presencial", "Virtual", "Semi-presencial"],
+  },
   aula: { type: String, enum: ["Aula-1", "Aula-2", "Aula-3", "Aula-4"] },
   precio: { type: String },
 });
