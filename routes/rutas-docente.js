@@ -40,26 +40,6 @@ router.get("/buscar/:busca", async (req, res, next) => {
   res.status(200).json({ mensaje: "Docentes encontrados", docentes: docentes });
 });
 
-// //Conseguir docente por parametro de búsqueda.
-// router.get("/buscar/:busca", async (req, res, next) => {
-//   const search = req.params.busca;
-//   let docentes;
-//   try {
-//     docentes = await Docente.find({
-//       $or: [
-//         { nombre: { $regex: search, $options: "i" } },
-//         { email: { $regex: search, $options: "i" } },
-//         { password: { $regex: search, $options: "i" } },
-//       ], //regex: nos indica que busquemos en el valor asignado a search y options es para ignorar may o min;
-//     }).populate("cursos");
-//   } catch (error) {
-//     const err = new Error("No se han encontrado los datos solicitados.🔙");
-//     err.code = 500;
-//     return next(err);
-//   }
-//   res.status(200).json({ mensaje: "Docentes encontrados", docentes: docentes });
-// });
-
 //Acceder a datos del cliente por email
 router.get("/personal/:busca", async (req, res, next) => {
   const search = req.params.busca;
