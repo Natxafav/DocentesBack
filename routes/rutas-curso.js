@@ -150,6 +150,7 @@ router.patch("/:id", async (req, res, next) => {
       new: true,
       runValidators: true,
     }).populate("docente");
+    console.log(req.body);
   } catch (error) {
     console.log(error.message);
     const err = new Error(
