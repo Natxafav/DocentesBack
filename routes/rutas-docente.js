@@ -195,7 +195,7 @@ router.delete("/:id", async (req, res, next) => {
     const err = new Error(
       "No se han podido eliminar los datos" + error.message
     );
-    err.code = 500;
+    res.status.json({ message: "Error al eliminar los datos" });
     return next(error);
   }
   if (!docenteEliminar) {
