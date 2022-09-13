@@ -28,6 +28,7 @@ router.get("/:id", async (req, res, next) => {
   let curso;
   try {
     curso = await Curso.findById(idCurso).populate("docente");
+    return res.json({ curso: curso });
   } catch (err) {
     const error = new Error("No se han podio recuperar los datos.");
     error.code = 500;

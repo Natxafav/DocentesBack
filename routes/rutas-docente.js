@@ -166,10 +166,9 @@ router.patch("/:id", async (req, res, next) => {
       { new: true, runValidators: true }
     ); // (1) Localizamos y actualizamos a la vez el docente en la BDD
   } catch (error) {
-    res.status(404).json({
-      mensaje: "No se han podido actualizar los datos del docente",
-      error: error.message,
-    });
+    const err = new Error("Error al eliminar." + error.message);
+    error.code = 404;
+    return next(error);
   }
   res.status(200).json({
     mensaje: "Docente modificado",
@@ -181,13 +180,6 @@ router.patch("/:id", async (req, res, next) => {
 router.delete("/:id", async (req, res, next) => {
   idEliminar = req.params.id;
   let docenteEliminar;
-  // try {
-  //   docenteEliminar = await Docente.findByIdAndDelete(idEliminar);
-  // } catch (error) {
-  //   const err = new Error("Error al eliminar.");
-  //   err.code = 500;
-  //   return next(error);
-  // }
 
   try {
     docenteEliminar = await Docente.findById(idEliminar);
